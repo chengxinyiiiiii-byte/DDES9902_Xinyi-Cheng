@@ -3,6 +3,8 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public bool gameStarted = false;
+
     public PlateCounter plateMia;
     public PlateCounter plateLeo;
     public PlateCounter plateCecilia;
@@ -12,23 +14,55 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        gameStarted = false;
+
         if (boardText != null)
         {
             boardText.text =
-                "Mia: I'm really hungry...\n\n" +
-                "Leo: Just a small piece is fine.\n" +
-                "Cecilia: Me too, just a little is enough.\n\n" +
-                "Don't forget yourself.\n\n" +
-                "Have you shared fairly? Press F to find out.";
+                "Welcome to the birthday party!\n\n" +
+                "Click START first to begin the game.\n\n" +
+                "After the game starts, you can share the cupcakes with everyone.";
         }
     }
 
     void Update()
     {
+        if (!gameStarted)
+        {
+            if (Input.GetKeyDown(KeyCode.F) && boardText != null)
+            {
+                boardText.text =
+                    "Not yet!\n\n" +
+                    "Please click START first.\n\n" +
+                    "Then you can share the cupcakes and check your answer.";
+            }
+
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             CheckResult();
         }
+    }
+
+    public void StartGame()
+    {
+        gameStarted = true;
+
+        if (boardText != null)
+        {
+            boardText.text =
+                "Let's share the cupcakes!\n\n" +
+                "Mia: \"I'm really hungry. I want about 1/2 of the cupcakes.\"\n\n" +
+                "Leo: \"I only need a small part.\"\n\n" +
+                "Cecilia: \"I'll have the same as Leo.\"\n\n" +
+                "Remember to keep a share for yourself too!\n\n" +
+                "Think about the whole group before you share.\n\n" +
+                "Press F to check your answer.";
+        }
+
+        Debug.Log("Game Started!");
     }
 
     void CheckResult()
@@ -45,80 +79,79 @@ public class GameManager : MonoBehaviour
             platePlayer.cupcakeCount == 1)
         {
             boardText.text =
-                "Mia: Thank you! That helps a lot.\n\n" +
-                "Leo: Perfect for me.\n" +
-                "Cecilia: That's just right.\n\n" +
-                "You: I have my share too.";
+                "Great sharing!\n\n" +
+                "Mia has a big share because she was very hungry.\n\n" +
+                "Leo and Cecilia have small equal shares.\n\n" +
+                "You also remembered to keep one for yourself.\n\n" +
+                "Everyone is happy!";
         }
         else
         {
-            string miaFeedback;
-            string leoFeedback;
-            string ceciliaFeedback;
-            string playerFeedback;
+            string miaHint;
+            string leoHint;
+            string ceciliaHint;
+            string playerHint;
 
-            // Mia feedback
             if (plateMia.cupcakeCount < 3)
             {
-                miaFeedback = "Mia: I'm still hungry...";
+                miaHint = "Mia still needs a bigger share.";
             }
             else if (plateMia.cupcakeCount > 3)
             {
-                miaFeedback = "Mia: That's more than I need.";
+                miaHint = "Mia has more than she needs.";
             }
             else
             {
-                miaFeedback = "Mia: Mine is fine.";
+                miaHint = "Mia's share looks good.";
             }
 
-            // Leo feedback
             if (plateLeo.cupcakeCount == 0)
             {
-                leoFeedback = "Leo: I didn't get any.";
+                leoHint = "Leo still needs a small share.";
             }
             else if (plateLeo.cupcakeCount == 1)
             {
-                leoFeedback = "Leo: Mine is fine.";
+                leoHint = "Leo's share looks good.";
             }
             else
             {
-                leoFeedback = "Leo: That's too much for me.";
+                leoHint = "Leo has more than a small share.";
             }
 
-            // Cecilia feedback
             if (plateCecilia.cupcakeCount == 0)
             {
-                ceciliaFeedback = "Cecilia: I didn't get any.";
+                ceciliaHint = "Cecilia still needs a small share.";
             }
             else if (plateCecilia.cupcakeCount == 1)
             {
-                ceciliaFeedback = "Cecilia: Mine is fine.";
+                ceciliaHint = "Cecilia's share looks good.";
             }
             else
             {
-                ceciliaFeedback = "Cecilia: That's too much for me.";
+                ceciliaHint = "Cecilia has more than a small share.";
             }
 
-            // Player feedback
             if (platePlayer.cupcakeCount == 0)
             {
-                playerFeedback = "You: Wait... did I forget myself?";
+                playerHint = "Do not forget to keep one for yourself.";
             }
             else if (platePlayer.cupcakeCount == 1)
             {
-                playerFeedback = "You: I have my share.";
+                playerHint = "Your share looks good.";
             }
             else
             {
-                playerFeedback = "You: That's more than I need.";
+                playerHint = "You have more than one share.";
             }
 
             boardText.text =
-                miaFeedback + "\n\n" +
-                leoFeedback + "\n" +
-                ceciliaFeedback + "\n\n" +
-                playerFeedback + "\n\n" +
-                "Try again. Press F to recheck.";
+                "Almost there!\n\n" +
+                "Think about the whole group again.\n\n" +
+                miaHint + "\n" +
+                leoHint + "\n" +
+                ceciliaHint + "\n" +
+                playerHint + "\n\n" +
+                "Try again, then press F to check.";
         }
     }
 }

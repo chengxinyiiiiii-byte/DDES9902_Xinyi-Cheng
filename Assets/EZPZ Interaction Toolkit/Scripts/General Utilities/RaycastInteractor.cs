@@ -556,40 +556,44 @@ public class RaycastInteractor : MonoBehaviour
     }
 
     public void DropMovable()
+{
+    if (holdableSubject != null)
     {
-        if (holdableSubject != null)
+        Holdable droppedObject = holdableSubject;
+        Rigidbody droppedRbody = droppedObject.GetComponent<Rigidbody>();
+
+        droppedObject.moving = false;
+        droppedObject.Drop();
+
+        droppedObject.transform.parent = null;
+
+        if (droppedObject.noCollideOnHold)
         {
-            holdableSubject.moving = false;
-            holdableSubject.Drop();
-
-            if (holdableSubject.noCollideOnHold)
-            {
-                Holdable.SetColliderIsTrigger(holdableSubject, false);
-            }
-
-            if (subjectRbody != null)
-            {
-                subjectRbody.useGravity = true;
-                subjectRbody.isKinematic = false;
-
-                if (holdableSubject.throwForce > 0)
-                {
-                    Vector3 direction = holdableSubject.transform.position - rayPointer.position;
-                    subjectRbody.AddForce(holdableSubject.throwForce * direction * 100);
-                }
-            }
-
-            if (holdableSubject.myMagnetSnapper != null)
-            {
-                holdableSubject.myMagnetSnapper.ReleaseSubject();
-            }
-
-            //moveSubject.transform.parent = previousMoveParent;
-            holdableSubject.transform.parent = null;
-            previousMoveParent = null;
-            holdableSubject = null;
+            Holdable.SetColliderIsTrigger(droppedObject, false);
         }
+
+        if (droppedRbody != null)
+        {
+            droppedRbody.useGravity = true;
+            droppedRbody.isKinematic = false;
+            droppedRbody.linearVelocity = Vector3.zero;
+            droppedRbody.angularVelocity = Vector3.zero;
+        }
+
+        if (droppedObject.myMagnetSnapper != null)
+        {
+            droppedObject.myMagnetSnapper.ReleaseSubject();
+            droppedObject.myMagnetSnapper = null;
+        }
+
+        droppedObject.myRayManipulator = null;
+
+        previousMoveParent = null;
+        subjectRbody = null;
+        holdableSubject = null;
+        subject = null;
     }
+}
 
 
     public void HandleNonclickableMovable()

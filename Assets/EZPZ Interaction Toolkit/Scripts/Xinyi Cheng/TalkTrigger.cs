@@ -6,6 +6,8 @@ public class MotherDialogue : MonoBehaviour
     public AudioSource motherDialogue;
     public AudioSource timeNarration;
 
+    public GameEndingManager gameEndingManager;
+
     private bool triggered = false;
 
 
@@ -27,5 +29,16 @@ public class MotherDialogue : MonoBehaviour
     void PlayTimeNarration()
     {
         timeNarration.Play();
+
+        Invoke("StartGameTimer", timeNarration.clip.length);
+    }
+
+
+    void StartGameTimer()
+    {
+        if(gameEndingManager != null)
+        {
+            gameEndingManager.StartTimer();
+        }
     }
 }

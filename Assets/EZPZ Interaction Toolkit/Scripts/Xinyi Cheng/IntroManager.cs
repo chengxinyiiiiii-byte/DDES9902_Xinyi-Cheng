@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class IntroManager : MonoBehaviour
 {
-    public AudioSource narration;
-    public GameObject invisibleWall;
+    public AudioSource playerNarration;
+    public GameObject introGate;
 
     void Start()
     {
-        narration.Play();
+        // Play the player's narration when the game starts
+        playerNarration.Play();
 
-        Invoke("OpenGate", narration.clip.length);
+        // Remove the gate after the narration finishes
+        Invoke("RemoveGate", playerNarration.clip.length);
     }
 
-    void OpenGate()
+    void RemoveGate()
     {
-        invisibleWall.SetActive(false);
+        // Open the path by removing the invisible wall
+        introGate.SetActive(false);
     }
 }

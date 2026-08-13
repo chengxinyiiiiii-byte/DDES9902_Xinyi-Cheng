@@ -1,64 +1,32 @@
 using UnityEngine;
 
-public class TalkTrigger : MonoBehaviour
+public class MotherDialogue : MonoBehaviour
 {
-    public GameObject interactionPrompt;
-    public AudioSource motherVoice;
+    public AudioSource searchingVoice;
+    public AudioSource dialogueVoice;
 
-    private bool playerNearby = false;
-
-
-    void Start()
-    {
-        interactionPrompt.SetActive(false);
-    }
-
-
-    void Update()
-    {
-        if (playerNearby)
-        {
-            interactionPrompt.SetActive(true);
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                TalkToMother();
-            }
-        }
-        else
-        {
-            interactionPrompt.SetActive(false);
-        }
-    }
-
-
-    void TalkToMother()
-    {
-        interactionPrompt.SetActive(false);
-
-        if (motherVoice != null)
-        {
-            motherVoice.Stop();
-        }
-
-        Debug.Log("Start talking with Stella's mom");
-    }
+    private bool triggered = false;
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if(other.CompareTag("Player") && !triggered)
         {
-            playerNearby = true;
-        }
-    }
+            triggered = true;
 
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerNearby = false;
+            // Stop Stella searching voice
+            if(searchingVoice != null)
+            {
+                searchingVoice.Stop();
+            }
+
+
+            // Play mother dialogue
+            if(dialogueVoice != null)
+            {
+                dialogueVoice.Play();
+            }
         }
     }
 }

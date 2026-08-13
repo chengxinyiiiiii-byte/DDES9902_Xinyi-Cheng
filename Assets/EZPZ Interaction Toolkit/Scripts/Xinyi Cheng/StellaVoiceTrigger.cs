@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class StellaVoiceTrigger : MonoBehaviour
 {
-    public AudioSource motherVoice;
+    public AudioSource searchingVoice;
 
-    private bool hasPlayed = false;
+    private bool played = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player") && !hasPlayed)
+        if(other.CompareTag("Player") && !played)
         {
-            motherVoice.Play();
-            hasPlayed = true;
+            played = true;
+
+            searchingVoice.Play();
         }
     }
 }

@@ -3,7 +3,8 @@ using UnityEngine;
 public class MotherDialogue : MonoBehaviour
 {
     public AudioSource searchingVoice;
-    public AudioSource dialogueVoice;
+    public AudioSource motherDialogue;
+    public AudioSource timeNarration;
 
     private bool triggered = false;
 
@@ -14,19 +15,17 @@ public class MotherDialogue : MonoBehaviour
         {
             triggered = true;
 
+            searchingVoice.Stop();
 
-            // Stop Stella searching voice
-            if(searchingVoice != null)
-            {
-                searchingVoice.Stop();
-            }
+            motherDialogue.Play();
 
-
-            // Play mother dialogue
-            if(dialogueVoice != null)
-            {
-                dialogueVoice.Play();
-            }
+            Invoke("PlayTimeNarration", motherDialogue.clip.length + 1.5f);
         }
+    }
+
+
+    void PlayTimeNarration()
+    {
+        timeNarration.Play();
     }
 }

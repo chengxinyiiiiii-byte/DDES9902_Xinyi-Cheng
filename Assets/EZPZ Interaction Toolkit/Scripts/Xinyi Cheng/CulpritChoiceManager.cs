@@ -14,21 +14,15 @@ public class CulpritChoiceManager : MonoBehaviour
     void Start()
     {
         if (choicePanel != null)
-        {
             choicePanel.SetActive(false);
-        }
 
 
         if (wrongEndingPanel != null)
-        {
             wrongEndingPanel.SetActive(false);
-        }
 
 
         if (masterLetter != null)
-        {
             masterLetter.SetActive(false);
-        }
     }
 
 
@@ -62,6 +56,7 @@ public class CulpritChoiceManager : MonoBehaviour
         choicePanel.SetActive(false);
 
 
+        // Correct choice: reveal the letter
         if (masterLetter != null)
         {
             masterLetter.SetActive(true);
@@ -71,6 +66,7 @@ public class CulpritChoiceManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+
 
 
 
@@ -85,17 +81,13 @@ public class CulpritChoiceManager : MonoBehaviour
         }
 
 
-        // Play Misjudged Ending Music
         if (gameEndingManager != null)
         {
-            gameEndingManager.PlayMisjudgedMusic();
+            gameEndingManager.ShowMisjudgedEnding();
         }
 
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-
-        Time.timeScale = 0f;
     }
 }

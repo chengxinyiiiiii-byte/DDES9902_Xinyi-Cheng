@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class GameEndingManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameEndingManager : MonoBehaviour
     // Start at 18:00
 
 
+
     [Header("Music Settings")]
     public AudioSource musicSource;
 
@@ -32,13 +34,20 @@ public class GameEndingManager : MonoBehaviour
     public AudioClip tooLateEndingMusic;
     public AudioClip misjudgedEndingMusic;
 
+
     public float musicVolume = 1f;
 
+    public float fadeDuration = 2f;
+
+
+
+    private Coroutine musicCoroutine;
 
 
     private float remainingTime;
     private bool timerRunning = false;
     private bool gameEnded = false;
+
 
 
 
@@ -72,7 +81,7 @@ public class GameEndingManager : MonoBehaviour
 
 
 
-        // Start with community music
+        // Start Community Music
         PlayMusic(communityMusic);
     }
 
@@ -127,7 +136,7 @@ public class GameEndingManager : MonoBehaviour
 
 
 
-        // Change to investigation music
+        // Community -> Investigation
         PlayMusic(investigationMusic);
 
 
@@ -137,6 +146,7 @@ public class GameEndingManager : MonoBehaviour
 
         Debug.Log("GAME TIMER STARTED");
     }
+
 
 
 
@@ -183,7 +193,8 @@ public class GameEndingManager : MonoBehaviour
 
 
 
-    // Back Mountain Trigger calls this
+
+    // Back Mountain Trigger
     public void PlayHorrorMusic()
     {
         PlayMusic(horrorMusic);
@@ -195,7 +206,7 @@ public class GameEndingManager : MonoBehaviour
 
 
 
-    // Wrong culprit choice calls this
+    // Wrong culprit choice
     public void PlayMisjudgedMusic()
     {
         PlayMusic(misjudgedEndingMusic);
@@ -240,7 +251,6 @@ public class GameEndingManager : MonoBehaviour
 
         if (rescuedEndingPanel != null)
             rescuedEndingPanel.SetActive(true);
-
 
 
 
@@ -296,7 +306,6 @@ public class GameEndingManager : MonoBehaviour
 
 
 
-
         Cursor.lockState = CursorLockMode.None;
 
         Cursor.visible = true;
@@ -305,6 +314,7 @@ public class GameEndingManager : MonoBehaviour
 
         Time.timeScale = 0f;
     }
+
 
 
 
@@ -348,7 +358,6 @@ public class GameEndingManager : MonoBehaviour
 
 
 
-
         Cursor.lockState = CursorLockMode.None;
 
         Cursor.visible = true;
@@ -372,19 +381,65 @@ public class GameEndingManager : MonoBehaviour
 
 
 
+        if (musicCoroutine != null)
+        {
+            StopCoroutine(musicCoroutine);
+        }
+
+
+        musicCoroutine = StartCoroutine(ChangeMusic(music));
+    }
+
+
+
+
+
+
+
+
+    IEnumerator ChangeMusic(AudioClip newMusic)
+    {
+        // Fade out current music
+
+        while (musicSource.volume > 0f)
+        {
+            musicSource.volume -= Time.unscaledDeltaTime / fadeDuration;
+
+            yield return null;
+        }
+
+
+
         musicSource.Stop();
 
 
-        musicSource.clip = music;
 
+        // Switch music
+
+        musicSource.clip = newMusic;
 
         musicSource.loop = true;
 
-
-        musicSource.volume = musicVolume;
-
+        musicSource.volume = 0f;
 
         musicSource.Play();
+
+
+
+
+
+        // Fade in new music
+
+        while (musicSource.volume < musicVolume)
+        {
+            musicSource.volume += Time.unscaledDeltaTime / fadeDuration;
+
+            yield return null;
+        }
+
+
+
+        musicSource.volume = musicVolume;
     }
 
 
